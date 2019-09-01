@@ -4,7 +4,7 @@ import org.junit.Test;
 public class ModifySubscribersAddressTest {
 
     @Test
-    public void when_we_change_the_subscriber_s_address_then_the_contract_on_his_address_is_modified() {
+    public void when_we_change_the_subscriber_s_address_then_the_address_on_his_contract_is_modified() {
         SubscriberAddress expectedAddress = new SubscriberAddress(Country.FRANCE, "paris", 75005, "10, rue souflot", true);
         SubscriberId anyId = new SubscriberId("id");
         Contract contract = new Contract(new ContractId("test"), anyId);

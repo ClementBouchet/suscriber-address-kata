@@ -30,6 +30,8 @@ public class SuscriberAddressAcceptanceTest {
         Contract subscriptionContract2 = new Contract(contractId2, subscriberId);
         EffectiveDate effectiveDate = null;
         MovementDate movementDate = new MovementDate(LocalDateTime.of(2019, 9, 1, 15, 0));
+        TimeProviderInterface mockedTimeProvider = mock(TimeProviderInterface.class);
+        when(mockedTimeProvider.now()).thenReturn(movementDate);
 
         //Act
         subscriber.modifyAddress(expectedSubscriberAddress, effectiveDate);

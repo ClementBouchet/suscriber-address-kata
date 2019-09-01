@@ -11,8 +11,9 @@ public class ModifySubscribersAddressTest {
         SubscriberAddress expectedAddress = new SubscriberAddress(Country.FRANCE, "paris", 75005, "10, rue souflot", true);
         SubscriberId anyId = new SubscriberId("id");
         Contract contract = new Contract(new ContractId("test"), anyId);
-        List<Contract> contracts = new ArrayList<>();
-        contracts.add(contract);
+        List<Contract> contractList = new ArrayList<>();
+        contractList.add(contract);
+        ContractList contracts = new ContractList(contractList);
         EffectiveDate effectiveDate = null;
         SubscriberAddress initialAddress = new SubscriberAddress(Country.FRANCE, "paris", 75006, "12, rue vavin", true);
         Subscriber subscriber = new Subscriber(anyId, initialAddress, contracts);
@@ -30,13 +31,15 @@ public class ModifySubscribersAddressTest {
         Contract contract2 = new Contract(new ContractId("test2"), anyId);
         EffectiveDate effectiveDate = null;
         SubscriberAddress initialAddress = new SubscriberAddress(Country.FRANCE, "paris", 75006, "12, rue vavin", true);
-        List<Contract> contracts = new ArrayList<>();
-        contracts.add(contract);
-        contracts.add(contract2);
+        List<Contract> contractList = new ArrayList<>();
+        contractList.add(contract);
+        contractList.add(contract2);
+        ContractList contracts = new ContractList(contractList);
         Subscriber subscriber = new Subscriber(anyId, initialAddress, contracts);
 
         subscriber.modifyAddress(expectedAddress, effectiveDate);
-        for(Contract currentContract : contracts){
+
+        for(Contract currentContract : contractList){
             Assertions.assertThat(expectedAddress).isEqualTo(currentContract.getSubscriberAddress());
         }
     }

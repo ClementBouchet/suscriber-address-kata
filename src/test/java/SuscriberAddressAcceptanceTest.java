@@ -1,4 +1,5 @@
 import org.assertj.core.api.Assertions;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 public class SuscriberAddressAcceptanceTest {
 
+    @Ignore
     @Test
     public void modify_address_of_subscriber_acceptance_test(){
         //Arrange

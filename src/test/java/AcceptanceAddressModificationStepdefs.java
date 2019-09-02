@@ -30,12 +30,19 @@ public class AcceptanceAddressModificationStepdefs {
         subscriber = new Subscriber(subscriberId, initialSubscriberAddress);
     }
 
-    @When("^the advisor connected to canal modifies the subscriber's address without effective date$")
-    public void theAdvisorConnectedToCanalModifiesTheSubscriberSAddressWithoutEffectiveDate() {
+    @And("^the advisor is connected to \"([^\"]*)\"$")
+    public void theAdvisorIsConnectedTo(String arg0) {
         Login advisorPseudo = new Login("advisorTestLogin");
         AdvisorAuthenticatorInterface mockedAuthenticator = mock(AdvisorAuthenticatorInterface.class);
+        //Appel au RestController AuthenticateController avec arg0
         when(mockedAuthenticator.authenticate(advisorPseudo)).thenReturn(new AdvisorId("advisorTestId"));
         advisorId = mockedAuthenticator.authenticate(advisorPseudo);
+    }
+
+    @When("^the advisor modifies the subscriber's address without effective date$")
+    public void theAdvisorConnectedToCanalModifiesTheSubscriberSAddressWithoutEffectiveDate() {
+
+        //Appel au RestController SubscriberMovementController
         mockedSubscriberDaoInterface = mock(SubscriberDaoInterface.class);
         expectedSubscriberAddress = new SubscriberAddress(Country.FRANCE, "paris", 75013, "124, avenue d'Italie", isAddressActive);
         ContractId contractId = new ContractId("firstContract");

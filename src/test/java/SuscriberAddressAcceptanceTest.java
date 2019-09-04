@@ -1,3 +1,17 @@
+import fr.lacombe.AdvisorAuthenticatorInterface;
+import fr.lacombe.AdvisorId;
+import fr.lacombe.Contract;
+import fr.lacombe.ContractId;
+import fr.lacombe.Country;
+import fr.lacombe.EffectiveDate;
+import fr.lacombe.Login;
+import fr.lacombe.MovementDate;
+import fr.lacombe.MovementType;
+import fr.lacombe.Subscriber;
+import fr.lacombe.SubscriberAddress;
+import fr.lacombe.SubscriberDaoInterface;
+import fr.lacombe.SubscriberId;
+import fr.lacombe.TimeProviderInterface;
 import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,7 +48,7 @@ public class SuscriberAddressAcceptanceTest {
         when(mockedTimeProvider.now()).thenReturn(movementDate);
 
         //Act
-        subscriber.modifyAddress(expectedSubscriberAddress, effectiveDate);
+//        subscriber.modifyAddress(expectedSubscriberAddress);
 
         //Assert
         verify(mockedSubscriberDaoInterface).addModificationAddressMovement(advisorId, subscriberId, MovementType.SUSBCRIBER_INFO, movementDate);

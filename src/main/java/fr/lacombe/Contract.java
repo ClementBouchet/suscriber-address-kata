@@ -1,3 +1,5 @@
+package fr.lacombe;
+
 public class Contract {
 
     private SubscriberAddress subscriberAddress;

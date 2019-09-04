@@ -1,6 +1,9 @@
+package fr.lacombe;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SubscriberAddress {
+public class SubscriberAddress implements Serializable {
 
     private Country country;
     private int postalCode;
@@ -31,5 +34,45 @@ public class SubscriberAddress {
     @Override
     public int hashCode() {
         return Objects.hash(country, postalCode, streetName, isAddressActive, city);
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public int getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(int postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getStreetName() {
+        return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
+
+    public boolean isAddressActive() {
+        return isAddressActive;
+    }
+
+    public void setAddressActive(boolean addressActive) {
+        isAddressActive = addressActive;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

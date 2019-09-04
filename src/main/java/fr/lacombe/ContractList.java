@@ -1,3 +1,5 @@
+package fr.lacombe;
+
 import java.util.List;
 
 public class ContractList {

@@ -33,6 +33,7 @@ public class ModifySubscribersAddressTest {
         Assertions.assertThat(expectedAddress).isEqualTo(contract.getSubscriberAddress());
     }
 
+    @Ignore
     @Test
     public void when_we_change_the_subscriber_s_address_then_all_his_contracts_are_modified_with_his_new_address() {
         SubscriberAddress expectedAddress = new SubscriberAddress(Country.FRANCE, "paris", 75005, "10, rue souflot", true);

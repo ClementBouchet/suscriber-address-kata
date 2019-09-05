@@ -1,5 +1,13 @@
 package fr.lacombe;
 
+import fr.lacombe.Model.Contract;
+import fr.lacombe.Model.ContractId;
+import fr.lacombe.Model.ContractList;
+import fr.lacombe.Model.Country;
+import fr.lacombe.Model.EffectiveDate;
+import fr.lacombe.Model.Subscriber;
+import fr.lacombe.Model.SubscriberAddress;
+import fr.lacombe.Model.SubscriberId;
 import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;

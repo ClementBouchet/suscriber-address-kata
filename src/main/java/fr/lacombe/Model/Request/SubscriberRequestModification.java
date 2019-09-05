@@ -1,4 +1,9 @@
-package fr.lacombe;
+package fr.lacombe.Model.Request;
+
+import fr.lacombe.Model.AdvisorId;
+import fr.lacombe.Model.EffectiveDate;
+import fr.lacombe.Model.SubscriberAddress;
+import fr.lacombe.Model.SubscriberId;
 
 import java.io.Serializable;
 

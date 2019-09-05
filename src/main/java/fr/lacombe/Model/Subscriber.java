@@ -1,5 +1,7 @@
-package fr.lacombe;
+package fr.lacombe.Model;
 
+import fr.lacombe.Model.Request.SubscriberRequestModification;
+import fr.lacombe.Proxies.SubscriberRepositoryProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

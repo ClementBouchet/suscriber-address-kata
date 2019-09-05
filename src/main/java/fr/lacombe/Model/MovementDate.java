@@ -1,4 +1,4 @@
-package fr.lacombe;
+package fr.lacombe.Model;
 
 import java.time.LocalDateTime;
 

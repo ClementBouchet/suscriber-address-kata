@@ -1,5 +1,11 @@
-package fr.lacombe;
+package fr.lacombe.Proxies;
 
+import fr.lacombe.Model.AdvisorId;
+import fr.lacombe.Model.MovementDate;
+import fr.lacombe.Model.MovementType;
+import fr.lacombe.Model.SubscriberId;
+import fr.lacombe.Model.Request.SubscriberRequestModification;
+import fr.lacombe.Model.Request.SubscriberRequestMovement;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

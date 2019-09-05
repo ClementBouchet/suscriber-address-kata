@@ -1,10 +1,9 @@
-package fr.lacombe;
+package fr.lacombe.Model;
 
-public class AdvisorId {
+public class SubscriberId {
     private String id;
 
-    public AdvisorId(String id) {
-
+    public SubscriberId(String id) {
         this.id = id;
     }
 

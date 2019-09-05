@@ -2,17 +2,17 @@ package fr.lacombe;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class Subscriber {
+public class SubscriberController {
 
     private ContractList contracts;
 
     @Autowired
     private SubscriberRepositoryProxy subscriberRepository;
 
-    public Subscriber(SubscriberId subscriberId, SubscriberAddress address) {
+    public SubscriberController(SubscriberId subscriberId, SubscriberAddress address) {
     }
 
-    public Subscriber(SubscriberId anyId, SubscriberAddress initialAddress, ContractList contracts) {
+    public SubscriberController(SubscriberId anyId, SubscriberAddress initialAddress, ContractList contracts) {
         this.contracts = contracts;
     }
 

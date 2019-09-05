@@ -1,11 +1,5 @@
-import fr.lacombe.Contract;
-import fr.lacombe.ContractId;
-import fr.lacombe.ContractList;
-import fr.lacombe.Country;
-import fr.lacombe.EffectiveDate;
-import fr.lacombe.Subscriber;
-import fr.lacombe.SubscriberAddress;
-import fr.lacombe.SubscriberId;
+package fr.lacombe;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,9 +20,9 @@ public class ModifySubscribersAddressTest {
         ContractList contracts = new ContractList(contractList);
         EffectiveDate effectiveDate = null;
         SubscriberAddress initialAddress = new SubscriberAddress(Country.FRANCE, "paris", 75006, "12, rue vavin", true);
-        Subscriber subscriber = new Subscriber(anyId, initialAddress, contracts);
+        SubscriberController subscriberController = new SubscriberController(anyId, initialAddress, contracts);
 
-//        subscriber.modifyAddress(expectedAddress);
+//        subscriberController.modifyAddress(expectedAddress);
 
         Assertions.assertThat(expectedAddress).isEqualTo(contract.getSubscriberAddress());
     }
@@ -46,9 +40,9 @@ public class ModifySubscribersAddressTest {
         contractList.add(contract);
         contractList.add(contract2);
         ContractList contracts = new ContractList(contractList);
-        Subscriber subscriber = new Subscriber(anyId, initialAddress, contracts);
+        SubscriberController subscriberController = new SubscriberController(anyId, initialAddress, contracts);
 
-//        subscriber.modifyAddress(expectedAddress);
+//        subscriberController.modifyAddress(expectedAddress);
 
         for(Contract currentContract : contractList){
             Assertions.assertThat(expectedAddress).isEqualTo(currentContract.getSubscriberAddress());

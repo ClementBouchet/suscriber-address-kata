@@ -1,24 +1,11 @@
+package fr.lacombe;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import fr.lacombe.AdvisorId;
-import fr.lacombe.AuthenticationServiceProxy;
-import fr.lacombe.Contract;
-import fr.lacombe.ContractId;
-import fr.lacombe.ContractList;
-import fr.lacombe.Country;
-import fr.lacombe.EffectiveDate;
-import fr.lacombe.Login;
-import fr.lacombe.MovementDate;
-import fr.lacombe.Subscriber;
-import fr.lacombe.SubscriberAddress;
-import fr.lacombe.SubscriberId;
-import fr.lacombe.SubscriberRepositoryProxy;
-import fr.lacombe.SubscriberRequestModification;
-import fr.lacombe.TimeProviderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest{
 
-    private Subscriber subscriber;
+    private SubscriberController subscriberController;
     private SubscriberId subscriberId;
     private SubscriberAddress expectedSubscriberAddress;
     private Contract subscriptionContract;
@@ -62,7 +49,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     private final String jsonString = new Scanner(jsonInputStream, "UTF-8").useDelimiter("\\Z").next();
 
     private static final String APPLICATION_JSON = "application/json";
-    private static final String SUBSCRIBER_PATH = "/subscriber";
+    private static final String SUBSCRIBER_PATH = "/subscriberController";
     private static final String AUTHENTICATE_PATH = "/authenticate";
     private final WireMockServer wireMockServer1 = new WireMockServer(options().port(8084));
     private final WireMockServer wireMockServer2 = new WireMockServer(options().port(8085));
@@ -81,7 +68,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
         contractList.add(subscriptionContract2);
         ContractList contracts = new ContractList(contractList);
 
-        subscriber = new Subscriber(subscriberId, initialSubscriberAddress, contracts);
+        subscriberController = new SubscriberController(subscriberId, initialSubscriberAddress, contracts);
     }
 
     @And("^the advisor is connected to \"([^\"]*)\"$")
@@ -136,7 +123,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     @And("^a modification movement is created$")
     public void aModificationMovementIsCreated() {
         modificationResponse = subscriberRepositoryProxy.addMovement();
-        WireMock.verify(postRequestedFor(urlEqualTo("/subscriber/movement")));
+        WireMock.verify(postRequestedFor(urlEqualTo("/subscriberController/movement")));
         assertThat(HttpStatus.OK).isEqualByComparingTo(modificationResponse.getStatusCode());
 
         wireMockServer2.stop();

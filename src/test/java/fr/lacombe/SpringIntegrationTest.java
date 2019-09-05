@@ -1,4 +1,5 @@
-import fr.lacombe.SpringDemoApplication;
+package fr.lacombe;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 

@@ -1,23 +1,21 @@
 package fr.lacombe;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class SubscriberController {
 
-    private ContractList contracts;
+    public SubscriberController() {
+    }
 
     @Autowired
-    private SubscriberRepositoryProxy subscriberRepository;
+    SubscriberRepositoryProxy subscriberRepositoryProxy;
 
-    public SubscriberController(SubscriberId subscriberId, SubscriberAddress address) {
-    }
-
-    public SubscriberController(SubscriberId anyId, SubscriberAddress initialAddress, ContractList contracts) {
-        this.contracts = contracts;
-    }
-
-    public String modifyAddress(SubscriberRequestModification subscriberRequestModification) {
-//        contracts.applyAddressChangeOnAll(newAddress);
-        return subscriberRepository.modifyAddress(subscriberRequestModification).getBody();
+    @PostMapping(value = "/address/modification")
+    public ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification){
+        return subscriberRepositoryProxy.modifyAddressOnAllContracts(subscriberRequestModification);
     }
 }

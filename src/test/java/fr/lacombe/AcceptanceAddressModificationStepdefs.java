@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest{
 
-    private SubscriberController subscriberController;
+    private Subscriber subscriber;
     private SubscriberId subscriberId;
     private SubscriberAddress expectedSubscriberAddress;
     private Contract subscriptionContract;
@@ -45,11 +45,14 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     @Autowired
     SubscriberRepositoryProxy subscriberRepositoryProxy;
 
+    @Autowired
+    SubscriberController subscriberController;
+
     private final InputStream jsonInputStream = this.getClass().getClassLoader().getResourceAsStream("cucumber.json");
     private final String jsonString = new Scanner(jsonInputStream, "UTF-8").useDelimiter("\\Z").next();
 
     private static final String APPLICATION_JSON = "application/json";
-    private static final String SUBSCRIBER_PATH = "/subscriberController";
+    private static final String SUBSCRIBER_PATH = "/subscriber";
     private static final String AUTHENTICATE_PATH = "/authenticate";
     private final WireMockServer wireMockServer1 = new WireMockServer(options().port(8084));
     private final WireMockServer wireMockServer2 = new WireMockServer(options().port(8085));
@@ -68,7 +71,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
         contractList.add(subscriptionContract2);
         ContractList contracts = new ContractList(contractList);
 
-        subscriberController = new SubscriberController(subscriberId, initialSubscriberAddress, contracts);
+        subscriber = new Subscriber(subscriberId, initialSubscriberAddress, contracts);
     }
 
     @And("^the advisor is connected to \"([^\"]*)\"$")
@@ -111,7 +114,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
         TimeProviderInterface mockedTimeProvider = mock(TimeProviderInterface.class);
         when(mockedTimeProvider.now()).thenReturn(movementDate);
 
-        modificationResponse = subscriberRepositoryProxy.modifyAddress(subscriberRequestModification);
+        modificationResponse = subscriberController.modifyAddress(subscriberRequestModification);
 
     }
 
@@ -123,7 +126,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     @And("^a modification movement is created$")
     public void aModificationMovementIsCreated() {
         modificationResponse = subscriberRepositoryProxy.addMovement();
-        WireMock.verify(postRequestedFor(urlEqualTo("/subscriberController/movement")));
+        WireMock.verify(postRequestedFor(urlEqualTo("/subscriber/movement")));
         assertThat(HttpStatus.OK).isEqualByComparingTo(modificationResponse.getStatusCode());
 
         wireMockServer2.stop();

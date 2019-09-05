@@ -20,9 +20,9 @@ public class ModifySubscribersAddressTest {
         ContractList contracts = new ContractList(contractList);
         EffectiveDate effectiveDate = null;
         SubscriberAddress initialAddress = new SubscriberAddress(Country.FRANCE, "paris", 75006, "12, rue vavin", true);
-        SubscriberController subscriberController = new SubscriberController(anyId, initialAddress, contracts);
+        Subscriber subscriber = new Subscriber(anyId, initialAddress, contracts);
 
-//        subscriberController.modifyAddress(expectedAddress);
+//        subscriber.modifyAddressOnAllContracts(expectedAddress);
 
         Assertions.assertThat(expectedAddress).isEqualTo(contract.getSubscriberAddress());
     }
@@ -40,9 +40,9 @@ public class ModifySubscribersAddressTest {
         contractList.add(contract);
         contractList.add(contract2);
         ContractList contracts = new ContractList(contractList);
-        SubscriberController subscriberController = new SubscriberController(anyId, initialAddress, contracts);
+        Subscriber subscriber = new Subscriber(anyId, initialAddress, contracts);
 
-//        subscriberController.modifyAddress(expectedAddress);
+//        subscriber.modifyAddressOnAllContracts(expectedAddress);
 
         for(Contract currentContract : contractList){
             Assertions.assertThat(expectedAddress).isEqualTo(currentContract.getSubscriberAddress());

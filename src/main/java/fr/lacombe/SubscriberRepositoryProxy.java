@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface SubscriberRepositoryProxy {
 
     @PostMapping(value = "")
-    ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification);
-
-    @PostMapping(value = "/")
-    ResponseEntity<String> modifyAddress(SubscriberAddress newAddress);
+    ResponseEntity<String> modifyAddressOnAllContracts(SubscriberRequestModification subscriberRequestModification);
 
     @PostMapping(value = "/movement")
     void addMovement(@RequestParam(value = "advisorId") AdvisorId advisorId,

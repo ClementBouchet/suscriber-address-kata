@@ -2,23 +2,20 @@ package fr.lacombe;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import fr.lacombe.Controller.SubscriberController;
 import fr.lacombe.Model.AdvisorId;
-import fr.lacombe.Model.Contract;
-import fr.lacombe.Model.ContractId;
-import fr.lacombe.Model.ContractList;
 import fr.lacombe.Model.Country;
 import fr.lacombe.Model.EffectiveDate;
 import fr.lacombe.Model.Login;
 import fr.lacombe.Model.MovementDate;
-import fr.lacombe.Model.Subscriber;
+import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.SubscriberAddress;
 import fr.lacombe.Model.SubscriberId;
-import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Proxies.AuthenticationServiceProxy;
 import fr.lacombe.Proxies.SubscriberRepositoryProxy;
 import fr.lacombe.Utils.TimeProvider;
@@ -27,8 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
@@ -62,30 +57,32 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     private final WireMockServer wireMockServer1 = new WireMockServer(options().port(8084));
     private final WireMockServer wireMockServer2 = new WireMockServer(options().port(8085));
 
+    @Before
+    public void SetUpMockServers(){
+        wireMockServer1.start();
+        configureFor("localhost", 8084);
+        wireMockServer1.stubFor(post(urlEqualTo(AUTHENTICATE_PATH))
+                .willReturn(aResponse().withHeader("Content-Type", "text/plain").withBody("advisorId123").withStatus(200)));
+
+        wireMockServer2.start();
+        configureFor("localhost", 8085);
+        wireMockServer2.stubFor(post(urlEqualTo(SUBSCRIBER_PATH))
+                .willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("address changed on all contracts").withStatus(200)));
+
+        wireMockServer2.stubFor(post(urlEqualTo(SUBSCRIBER_PATH + "/movement"))
+                .willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("movement added").withStatus(200)));
+
+    }
+
     @Given("^a subscriber with an active address in France$")
     public void aSubscriberWithAnActiveAddressInFrance() {
         isAddressActive = true;
-        SubscriberAddress initialSubscriberAddress = new SubscriberAddress(Country.FRANCE, "lille", 59000, "7, rue Camille Guérin", isAddressActive);
         subscriberId = new SubscriberId("testID01");
-        ContractId contractId = new ContractId("firstContract");
-        Contract subscriptionContract = new Contract(contractId, subscriberId);
-        ContractId contractId2 = new ContractId("secondContract");
-        Contract subscriptionContract2 = new Contract(contractId2, subscriberId);
-        List<Contract> contractList = new ArrayList<>();
-        contractList.add(subscriptionContract);
-        contractList.add(subscriptionContract2);
-        ContractList contracts = new ContractList(contractList);
-
-        Subscriber subscriber = new Subscriber(subscriberId, initialSubscriberAddress, contracts);
     }
 
     @And("^the advisor is connected to \"([^\"]*)\"$")
     public void theAdvisorIsConnectedTo(String arg0) {
         Login advisorPseudo = new Login("advisorTestLogin");
-        wireMockServer1.start();
-        configureFor("localhost", 8084);
-        wireMockServer1.stubFor(post(urlEqualTo(AUTHENTICATE_PATH))
-                .willReturn(aResponse().withHeader("Content-Type", "text/plain").withBody("advisorId123").withStatus(200)));
 
         ResponseEntity<String> response = authenticationServiceProxy.authenticate(advisorPseudo);
         advisorId = new AdvisorId(response.getBody());
@@ -96,14 +93,6 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
 
     @When("^the advisor modifies the subscriber's address without effective date$")
     public void theAdvisorModifiesTheSubscriberSAddressWithoutEffectiveDate() {
-
-        wireMockServer2.start();
-        configureFor("localhost", 8085);
-        wireMockServer2.stubFor(post(urlEqualTo(SUBSCRIBER_PATH))
-                .willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("address changed on all contracts").withStatus(200)));
-
-        wireMockServer2.stubFor(post(urlEqualTo(SUBSCRIBER_PATH + "/movement"))
-                .willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("movement added").withStatus(200)));
 
         SubscriberAddress expectedSubscriberAddress = new SubscriberAddress(Country.FRANCE, "paris", 75013, "124, avenue d'Italie", isAddressActive);
         EffectiveDate effectiveDate = null;

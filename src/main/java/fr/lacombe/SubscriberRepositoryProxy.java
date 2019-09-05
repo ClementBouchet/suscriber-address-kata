@@ -18,5 +18,5 @@ public interface SubscriberRepositoryProxy {
                      @RequestParam(value = "movementDate") MovementDate movementDate);
 
     @PostMapping(value = "/movement")
-    ResponseEntity<String> addMovement();
+    ResponseEntity<String> addMovement(SubscriberRequestMovement subscriberRequestMovement);
 }

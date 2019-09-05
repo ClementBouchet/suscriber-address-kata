@@ -8,14 +8,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SubscriberController {
 
-    public SubscriberController() {
-    }
+    @Autowired
+    private TimeProviderInterface timeProvider;
+
 
     @Autowired
     SubscriberRepositoryProxy subscriberRepositoryProxy;
 
     @PostMapping(value = "/address/modification")
     public ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification){
+        SubscriberRequestMovement subscriberRequestMovement = setUpSubscriberRequestMovement(subscriberRequestModification);
+        subscriberRepositoryProxy.addMovement(subscriberRequestMovement);
         return subscriberRepositoryProxy.modifyAddressOnAllContracts(subscriberRequestModification);
+    }
+
+    private SubscriberRequestMovement setUpSubscriberRequestMovement(SubscriberRequestModification subscriberRequestModification) {
+        SubscriberRequestMovement subscriberRequestMovement = new SubscriberRequestMovement();
+        subscriberRequestMovement.setAdvisorId(subscriberRequestModification.getAdvisorId());
+        subscriberRequestMovement.setMovementDate(timeProvider.now());
+        subscriberRequestMovement.setSubscriberId(subscriberRequestModification.getSubscriberId());
+        subscriberRequestMovement.setMovementType(MovementType.SUSBCRIBER_INFO);
+        return subscriberRequestMovement;
+    }
+
+    public void setTimeProvider(TimeProvider timeProvider) {
+        this.timeProvider = timeProvider;
     }
 }

@@ -1,6 +1,8 @@
 package fr.lacombe.Model;
 
-public class SubscriberId {
+import java.io.Serializable;
+
+public class SubscriberId implements Serializable {
     private String id;
 
     public SubscriberId(String id) {

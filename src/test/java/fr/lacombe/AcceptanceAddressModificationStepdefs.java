@@ -102,7 +102,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
         when(mockedTimeProvider.now()).thenReturn(movementDate);
         subscriberController.setTimeProvider(mockedTimeProvider);
 
-        modificationResponse = subscriberController.modifyAddress(subscriberRequestModification);
+        //modificationResponse = subscriberController.modifyAddress(subscriberRequestModification);
     }
 
     @Then("^the modified subscriber's address is saved on all the contracts of the subscriber$")

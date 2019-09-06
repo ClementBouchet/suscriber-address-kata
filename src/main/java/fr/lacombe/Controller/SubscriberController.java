@@ -1,6 +1,8 @@
 package fr.lacombe.Controller;
 
-import fr.lacombe.Model.MovementType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.lacombe.Model.*;
+import fr.lacombe.Proxies.AddressRepository;
 import fr.lacombe.Proxies.SubscriberRepositoryProxy;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.Request.SubscriberRequestMovement;
@@ -11,21 +13,36 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 public class SubscriberController {
 
     @Autowired
     private TimeProviderInterface timeProvider;
 
-
     @Autowired
     SubscriberRepositoryProxy subscriberRepositoryProxy;
 
+    @Autowired
+    AddressRepository addressRepository;
+
+    private ContractList contractList;
+
     @PostMapping(value = "/address/modification")
-    public ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification){
-        SubscriberRequestMovement subscriberRequestMovement = setUpSubscriberRequestMovement(subscriberRequestModification);
-        subscriberRepositoryProxy.addMovement(subscriberRequestMovement);
-        return subscriberRepositoryProxy.modifyAddressOnAllContracts(subscriberRequestModification);
+    public ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification) throws IOException {
+
+        SubscriberId subscriberId = subscriberRequestModification.getSubscriberId();
+        ResponseEntity<String> addressRepositoryResponse = addressRepository.getCountryAddress(subscriberId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Country country = objectMapper.readValue(addressRepositoryResponse.getBody(), Country.class);
+        if(country.isFrance(country)){
+            contractList.modifySubscriberAddress(subscriberRequestModification.getSubscriberAddress());
+        }
+        //SubscriberRequestMovement subscriberRequestMovement = setUpSubscriberRequestMovement(subscriberRequestModification);
+        //subscriberRepositoryProxy.addMovement(subscriberRequestMovement);
+        //return subscriberRepositoryProxy.modifyAddressOnAllContracts(subscriberRequestModification);
+        return null;
     }
 
     private SubscriberRequestMovement setUpSubscriberRequestMovement(SubscriberRequestModification subscriberRequestModification) {
@@ -39,5 +56,9 @@ public class SubscriberController {
 
     public void setTimeProvider(TimeProvider timeProvider) {
         this.timeProvider = timeProvider;
+    }
+
+    public void setContractList(ContractList contractList) {
+        this.contractList = contractList;
     }
 }

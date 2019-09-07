@@ -37,8 +37,7 @@ public class SubscriberController {
 
         SubscriberId subscriberId = subscriberRequestModification.getSubscriberId();
         ResponseEntity<String> addressRepositoryResponse = addressRepository.getCountryAddress(subscriberId);
-        ObjectMapper objectMapper = new ObjectMapper();
-        Country country = objectMapper.readValue(addressRepositoryResponse.getBody(), Country.class);
+        Country country = mapJsonToCountry(addressRepositoryResponse);
         if(country.isFrance()){
             contractList.modifySubscriberAddressOnAllContracts(subscriberRequestModification.getSubscriberAddress());
         }
@@ -46,6 +45,11 @@ public class SubscriberController {
         //subscriberRepositoryProxy.addMovement(subscriberRequestMovement);
         //return subscriberRepositoryProxy.modifyAddressOnAllContracts(subscriberRequestModification);
         return null;
+    }
+
+    private Country mapJsonToCountry(ResponseEntity<String> addressRepositoryResponse) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(addressRepositoryResponse.getBody(), Country.class);
     }
 
     private SubscriberRequestMovement setUpSubscriberRequestMovement(SubscriberRequestModification subscriberRequestModification) {

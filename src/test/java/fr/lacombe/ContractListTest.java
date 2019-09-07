@@ -31,7 +31,10 @@ public class ContractListTest {
 
         contractList.modifySubscriberAddressOnAllContracts(newSubscriberAddress);
 
-        List<SubscriberAddress> addressList = contractList.contracts.stream().map(SubscriberContract::getAddress).collect(Collectors.toList());
+        List<SubscriberAddress> addressList = contractList.contracts
+                .stream()
+                .map(SubscriberContract::getAddress)
+                .collect(Collectors.toList());
         Assertions.assertThat(addressList).containsOnly(newSubscriberAddress);
     }
 }

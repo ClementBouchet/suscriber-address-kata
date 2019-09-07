@@ -8,6 +8,7 @@ import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.Request.SubscriberRequestMovement;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.AddressRepository;
+import fr.lacombe.Proxies.ContractRepository;
 import fr.lacombe.Proxies.SubscriberRepositoryProxy;
 import fr.lacombe.Utils.TimeProvider;
 import fr.lacombe.Utils.TimeProviderInterface;
@@ -32,6 +33,9 @@ public class SubscriberController {
 
     private ContractList contractList;
 
+    @Autowired
+    private ContractRepository contractRepository;
+
     @PostMapping(value = "/address/modification")
     public ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification) throws IOException {
 
@@ -39,12 +43,17 @@ public class SubscriberController {
         ResponseEntity<String> addressRepositoryResponse = addressRepository.getCountryAddress(subscriberId);
         Country country = mapJsonToCountry(addressRepositoryResponse);
         if(country.isFrance()){
+            ResponseEntity<String> contractRepositoryResponse = contractRepository.getAllContractsFromSubscriber(subscriberId.getId());
+            mapJsonToContractList(contractRepositoryResponse);
             contractList.modifySubscriberAddressOnAllContracts(subscriberRequestModification.getSubscriberAddress());
         }
         //SubscriberRequestMovement subscriberRequestMovement = setUpSubscriberRequestMovement(subscriberRequestModification);
         //subscriberRepositoryProxy.addMovement(subscriberRequestMovement);
         //return subscriberRepositoryProxy.modifyAddressOnAllContracts(subscriberRequestModification);
         return null;
+    }
+
+    private void mapJsonToContractList(ResponseEntity<String> contractRepositoryResponse) throws IOException {
     }
 
     private Country mapJsonToCountry(ResponseEntity<String> addressRepositoryResponse) throws IOException {

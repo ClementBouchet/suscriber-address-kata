@@ -7,12 +7,17 @@ import fr.lacombe.Model.AdvisorId;
 import fr.lacombe.Model.ContractList;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.SubscriberId;
+import fr.lacombe.Proxies.ContractRepository;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -33,11 +38,18 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @ClassRule
     public static WireMockClassRule wireMockClassRule = new WireMockClassRule(options().port(8008).bindAddress("localhost"));
-
     @Rule
     public WireMockClassRule instanceRule = wireMockClassRule;
+    @ClassRule
+    public static WireMockClassRule wireMockClassRule2  =new WireMockClassRule(options().port(8009).bindAddress("localhost"));;
+    @Rule
+    public WireMockClassRule instanceRule2 = wireMockClassRule2;
+
+    @Mock
+    private ContractRepository mockedContractRepository;
 
     @Autowired
+    @InjectMocks
     private SubscriberController subcriberController;
 
     private static UUID id;
@@ -47,23 +59,28 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
         id = UUID.randomUUID();
     }
 
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+    }
+
     @Test
     public void when_the_subscriber_lives_in_France_then_modify_his_address() throws IOException {
 
-        StubMapping stubMapping = instanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = instanceRule.stubFor(post(urlEqualTo("/address"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"country\": \"FRANCE\"}")));
         ContractList mockedContractList = Mockito.mock(ContractList.class);
-
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
         subcriberController.setContractList(mockedContractList);
+
         subcriberController.modifyAddress(subscriberRequestModification);
 
         verify(mockedContractList).modifySubscriberAddressOnAllContracts(any());
 
-        removeStub(stubMapping);
+        removeStub(stubMappingForAddressRepository);
     }
 
 
@@ -72,16 +89,34 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
         ContractList mockedContractList = Mockito.mock(ContractList.class);
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
-
-        instanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = instanceRule.stubFor(post(urlEqualTo("/address"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"country\": \"ITALIA\"}")));
-
         subcriberController.setContractList(mockedContractList);
+
         subcriberController.modifyAddress(subscriberRequestModification);
 
         verify(mockedContractList, never()).modifySubscriberAddressOnAllContracts(any());
+
+        removeStub(stubMappingForAddressRepository);
+    }
+
+    @Test
+    public void when_the_subscriber_lives_in_France_then_get_all_his_contracts() throws IOException {
+        StubMapping stubMappingForAddressRepository = instanceRule.stubFor(post(urlEqualTo("/address"))
+                .withId(id)
+                .willReturn(aResponse().withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"country\": \"FRANCE\"}")));
+        ContractList mockedContractList = Mockito.mock(ContractList.class);
+        SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+        subcriberController.setContractList(mockedContractList);
+        subcriberController.modifyAddress(subscriberRequestModification);
+
+        verify(mockedContractRepository).getAllContractsFromSubscriber(any());
+
+        removeStub(stubMappingForAddressRepository);
     }
 }

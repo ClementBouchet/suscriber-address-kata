@@ -29,7 +29,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
-public class SubscriberAddressTest extends SpringIntegrationTest{
+public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @ClassRule
     public static WireMockClassRule wireMockClassRule = new WireMockClassRule(options().port(8008).bindAddress("localhost"));
@@ -61,7 +61,7 @@ public class SubscriberAddressTest extends SpringIntegrationTest{
         subcriberController.setContractList(mockedContractList);
         subcriberController.modifyAddress(subscriberRequestModification);
 
-        verify(mockedContractList).modifySubscriberAddress(any());
+        verify(mockedContractList).modifySubscriberAddressOnAllContracts(any());
 
         removeStub(stubMapping);
     }
@@ -82,6 +82,6 @@ public class SubscriberAddressTest extends SpringIntegrationTest{
         subcriberController.setContractList(mockedContractList);
         subcriberController.modifyAddress(subscriberRequestModification);
 
-        verify(mockedContractList, never()).modifySubscriberAddress(any());
+        verify(mockedContractList, never()).modifySubscriberAddressOnAllContracts(any());
     }
 }

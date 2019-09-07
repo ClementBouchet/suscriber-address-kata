@@ -40,7 +40,7 @@ public class SubscriberController {
         ObjectMapper objectMapper = new ObjectMapper();
         Country country = objectMapper.readValue(addressRepositoryResponse.getBody(), Country.class);
         if(country.isFrance()){
-            contractList.modifySubscriberAddress(subscriberRequestModification.getSubscriberAddress());
+            contractList.modifySubscriberAddressOnAllContracts(subscriberRequestModification.getSubscriberAddress());
         }
         //SubscriberRequestMovement subscriberRequestMovement = setUpSubscriberRequestMovement(subscriberRequestModification);
         //subscriberRepositoryProxy.addMovement(subscriberRequestMovement);

@@ -1,15 +1,22 @@
 package fr.lacombe.Model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
+import static fr.lacombe.Model.CountryEnum.FRANCE;
 
-public enum Country implements Serializable {
-    @JsonProperty("country")
-    FRANCE,
-    ITALIA;
+public class Country {
 
-    public boolean isFrance(Country country) {
-        return country.equals(FRANCE);
+
+    private CountryEnum countryEnum;
+
+    @JsonCreator
+    public Country(@JsonProperty("country") CountryEnum countryEnum) {
+        this.countryEnum = countryEnum;
     }
+
+    public boolean isFrance() {
+        return countryEnum.equals(FRANCE);
+    }
+
 }

@@ -1,11 +1,14 @@
 package fr.lacombe.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.lacombe.Model.*;
-import fr.lacombe.Proxies.AddressRepository;
-import fr.lacombe.Proxies.SubscriberRepositoryProxy;
+import fr.lacombe.Model.ContractList;
+import fr.lacombe.Model.Country;
+import fr.lacombe.Model.MovementType;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.Request.SubscriberRequestMovement;
+import fr.lacombe.Model.SubscriberId;
+import fr.lacombe.Proxies.AddressRepository;
+import fr.lacombe.Proxies.SubscriberRepositoryProxy;
 import fr.lacombe.Utils.TimeProvider;
 import fr.lacombe.Utils.TimeProviderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +39,7 @@ public class SubscriberController {
         ResponseEntity<String> addressRepositoryResponse = addressRepository.getCountryAddress(subscriberId);
         ObjectMapper objectMapper = new ObjectMapper();
         Country country = objectMapper.readValue(addressRepositoryResponse.getBody(), Country.class);
-        if(country.isFrance(country)){
+        if(country.isFrance()){
             contractList.modifySubscriberAddress(subscriberRequestModification.getSubscriberAddress());
         }
         //SubscriberRequestMovement subscriberRequestMovement = setUpSubscriberRequestMovement(subscriberRequestModification);

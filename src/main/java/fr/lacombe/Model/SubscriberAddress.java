@@ -5,15 +5,15 @@ import java.util.Objects;
 
 public class SubscriberAddress implements Serializable {
 
-    private Country country;
+    private CountryEnum countryEnum;
     private int postalCode;
     private String streetName;
     private boolean isAddressActive;
     private String city;
 
-    public SubscriberAddress(Country country, String city, int postalCode, String streetName, boolean isAddressActive) {
+    public SubscriberAddress(CountryEnum countryEnum, String city, int postalCode, String streetName, boolean isAddressActive) {
         this.city = city;
-        this.country = country;
+        this.countryEnum = countryEnum;
         this.postalCode = postalCode;
         this.streetName = streetName;
         this.isAddressActive = isAddressActive;
@@ -26,22 +26,22 @@ public class SubscriberAddress implements Serializable {
         SubscriberAddress that = (SubscriberAddress) o;
         return postalCode == that.postalCode &&
                 isAddressActive == that.isAddressActive &&
-                country == that.country &&
+                countryEnum == that.countryEnum &&
                 streetName.equals(that.streetName) &&
                 city.equals(that.city);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(country, postalCode, streetName, isAddressActive, city);
+        return Objects.hash(countryEnum, postalCode, streetName, isAddressActive, city);
     }
 
-    public Country getCountry() {
-        return country;
+    public CountryEnum getCountryEnum() {
+        return countryEnum;
     }
 
-    public void setCountry(Country country) {
-        this.country = country;
+    public void setCountryEnum(CountryEnum countryEnum) {
+        this.countryEnum = countryEnum;
     }
 
     public int getPostalCode() {

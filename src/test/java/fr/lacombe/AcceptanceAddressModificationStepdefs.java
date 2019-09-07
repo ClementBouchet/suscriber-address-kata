@@ -9,7 +9,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import fr.lacombe.Controller.SubscriberController;
 import fr.lacombe.Model.AdvisorId;
-import fr.lacombe.Model.Country;
+import fr.lacombe.Model.CountryEnum;
 import fr.lacombe.Model.EffectiveDate;
 import fr.lacombe.Model.Login;
 import fr.lacombe.Model.MovementDate;
@@ -94,7 +94,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     @When("^the advisor modifies the subscriber's address without effective date$")
     public void theAdvisorModifiesTheSubscriberSAddressWithoutEffectiveDate() {
 
-        SubscriberAddress expectedSubscriberAddress = new SubscriberAddress(Country.FRANCE, "paris", 75013, "124, avenue d'Italie", isAddressActive);
+        SubscriberAddress expectedSubscriberAddress = new SubscriberAddress(CountryEnum.FRANCE, "paris", 75013, "124, avenue d'Italie", isAddressActive);
         EffectiveDate effectiveDate = null;
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(expectedSubscriberAddress,subscriberId, effectiveDate, advisorId);
         MovementDate movementDate = new MovementDate(LocalDateTime.of(2019, 9, 1, 15, 0));

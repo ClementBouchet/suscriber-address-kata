@@ -111,4 +111,19 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
         removeStub(stubMappingForAddressRepository);
     }
+
+    @Test
+    public void when_the_subscriber_lives_in_France_then_save_all_the_modified_contracts() throws IOException {
+        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(post(urlEqualTo("/address"))
+                .withId(id)
+                .willReturn(aResponse().withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"country\": \"FRANCE\"}")));
+        SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+        subcriberController.modifyAddress(subscriberRequestModification);
+
+        verify(mockedContractRepository).saveContracts(any());
+
+        removeStub(stubMappingForAddressRepository);
+    }
 }

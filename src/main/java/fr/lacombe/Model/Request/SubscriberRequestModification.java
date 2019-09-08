@@ -7,7 +7,7 @@ import fr.lacombe.Model.SubscriberId;
 
 import java.io.Serializable;
 
-public class SubscriberRequestModification extends SubscriberRequest implements Serializable {
+public class SubscriberRequestModification extends Request implements Serializable {
 
     private SubscriberAddress subscriberAddress;
     private SubscriberId subscriberId;

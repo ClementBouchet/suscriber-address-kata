@@ -5,7 +5,7 @@ import fr.lacombe.Model.MovementDate;
 import fr.lacombe.Model.MovementType;
 import fr.lacombe.Model.SubscriberId;
 
-public class SubscriberRequestMovement extends SubscriberRequest{
+public class SubscriberRequestMovement extends Request {
 
     private AdvisorId advisorId;
     private SubscriberId subscriberId;

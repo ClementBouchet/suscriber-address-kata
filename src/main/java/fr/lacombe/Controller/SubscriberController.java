@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.lacombe.Model.ContractList;
 import fr.lacombe.Model.Country;
 import fr.lacombe.Model.MovementType;
+import fr.lacombe.Model.Request.ContractListRequest;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.Request.SubscriberRequestMovement;
 import fr.lacombe.Model.SubscriberId;
@@ -47,6 +48,8 @@ public class SubscriberController {
             ResponseEntity<String> contractRepositoryResponse = contractRepository.getAllContractsFromSubscriber(subscriberId.getId());
             mapJsonToContractList(contractRepositoryResponse);
             contractList.modifySubscriberAddressOnAllContracts(subscriberRequestModification.getSubscriberAddress());
+            ContractListRequest contractListRequest = new ContractListRequest(contractList);
+            contractRepositoryResponse = contractRepository.saveContracts(contractListRequest);
         }
         //SubscriberRequestMovement subscriberRequestMovement = setUpSubscriberRequestMovement(subscriberRequestModification);
         //subscriberRepositoryProxy.addMovement(subscriberRequestMovement);

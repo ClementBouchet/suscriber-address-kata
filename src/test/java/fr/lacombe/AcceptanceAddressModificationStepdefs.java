@@ -8,6 +8,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import fr.lacombe.Controller.SubscriberController;
 import fr.lacombe.Model.AdvisorId;
+import fr.lacombe.Model.Country;
 import fr.lacombe.Model.CountryEnum;
 import fr.lacombe.Model.EffectiveDate;
 import fr.lacombe.Model.Login;
@@ -16,6 +17,8 @@ import fr.lacombe.Model.SubscriberAddress;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.AddressRepository;
 import fr.lacombe.Proxies.AuthenticationService;
+import fr.lacombe.Utils.JsonMapper;
+import org.assertj.core.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -43,6 +46,8 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
 
     @Autowired
     AddressRepository addressRepository;
+
+    JsonMapper jsonMapper;
 
     @Autowired
     SubscriberController subscriberController;
@@ -88,12 +93,14 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     }
 
     @Given("^a subscriber with an active address in France$")
-    public void aSubscriberWithAnActiveAddressInFrance() {
+    public void aSubscriberWithAnActiveAddressInFrance() throws IOException {
         subscriberId = new SubscriberId("aSubscriberId01");
-
         ResponseEntity<String> response = addressRepository.getCountryAddress(subscriberId.getId());
+        jsonMapper = new JsonMapper();
+        Country country = jsonMapper.mapJsonToCountry(response);
 
         wireMockServerAddressRepository.verify(getRequestedFor(urlMatching(ADDRESS_PATH)));
+        Assertions.assertThat(country.isFrance()).isTrue();
     }
 
     @And("^the advisor is connected to \"([^\"]*)\"$")

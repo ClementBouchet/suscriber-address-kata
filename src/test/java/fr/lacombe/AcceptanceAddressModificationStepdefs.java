@@ -12,17 +12,24 @@ import fr.lacombe.Model.Country;
 import fr.lacombe.Model.CountryEnum;
 import fr.lacombe.Model.EffectiveDate;
 import fr.lacombe.Model.Login;
+import fr.lacombe.Model.MovementDate;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.SubscriberAddress;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.AddressRepository;
 import fr.lacombe.Proxies.AuthenticationService;
 import fr.lacombe.Utils.JsonMapper;
+import fr.lacombe.Utils.SubscriberControllerContext;
+import fr.lacombe.Utils.TimeProvider;
 import org.assertj.core.api.Assertions;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
@@ -33,6 +40,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest{
 
@@ -47,10 +55,21 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     @Autowired
     AddressRepository addressRepository;
 
-    JsonMapper jsonMapper;
+    @Mock
+    SubscriberControllerContext subscriberControllerContext;
+    @Mock
+    TimeProvider timeProvider;
 
+    @InjectMocks
     @Autowired
     SubscriberController subscriberController;
+
+    @Before
+    private void setUpMocks(){
+        initMocks(this);
+        Mockito.when(timeProvider.now()).thenReturn(new MovementDate(LocalDateTime.of(2019, 1, 1, 12, 0)));
+        Mockito.when(subscriberControllerContext.getAdvisorId()).thenReturn(new AdvisorId("anyAdvisorId"));
+    }
 
     private static final String GET_SUBSCRIBER_CONTRACTS_PATH = "/contract/.*";
     private static final String SAVE_SUBSCRIBER_CONTRACTS = "/contract";
@@ -96,7 +115,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     public void aSubscriberWithAnActiveAddressInFrance() throws IOException {
         subscriberId = new SubscriberId("aSubscriberId01");
         ResponseEntity<String> response = addressRepository.getCountryAddress(subscriberId.getId());
-        jsonMapper = new JsonMapper();
+        JsonMapper jsonMapper = new JsonMapper();
         Country country = jsonMapper.mapJsonToCountry(response);
 
         wireMockServerAddressRepository.verify(getRequestedFor(urlMatching(ADDRESS_PATH)));

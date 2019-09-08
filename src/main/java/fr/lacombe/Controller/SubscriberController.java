@@ -13,7 +13,6 @@ import fr.lacombe.Proxies.ContractRepository;
 import fr.lacombe.Proxies.HistoryRepository;
 import fr.lacombe.Utils.JsonMapper;
 import fr.lacombe.Utils.SubscriberControllerContext;
-import fr.lacombe.Utils.TimeProvider;
 import fr.lacombe.Utils.TimeProviderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,10 +61,6 @@ public class SubscriberController {
             return historyRepository.createMovement(historyRequest);
         }
         return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-    }
-
-    public void setTimeProvider(TimeProvider timeProvider) {
-        this.timeProvider = timeProvider;
     }
 
 }

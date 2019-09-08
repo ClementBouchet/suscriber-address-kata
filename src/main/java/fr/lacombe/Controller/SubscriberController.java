@@ -1,6 +1,5 @@
 package fr.lacombe.Controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.lacombe.Model.ContractList;
 import fr.lacombe.Model.Country;
 import fr.lacombe.Model.MovementType;
@@ -11,6 +10,7 @@ import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.AddressRepository;
 import fr.lacombe.Proxies.ContractRepository;
 import fr.lacombe.Proxies.SubscriberRepository;
+import fr.lacombe.Utils.JsonMapper;
 import fr.lacombe.Utils.TimeProvider;
 import fr.lacombe.Utils.TimeProviderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +36,9 @@ public class SubscriberController {
     ContractList contractList;
 
     @Autowired
+    JsonMapper jsonMapper;
+
+    @Autowired
     private ContractRepository contractRepository;
 
     @PostMapping(value = "/address/modification")
@@ -43,10 +46,10 @@ public class SubscriberController {
 
         SubscriberId subscriberId = subscriberRequestModification.getSubscriberId();
         ResponseEntity<String> addressRepositoryResponse = addressRepository.getCountryAddress(subscriberId.getId());
-        Country country = mapJsonToCountry(addressRepositoryResponse);
+        Country country = jsonMapper.mapJsonToCountry(addressRepositoryResponse);
         if(country.isFrance()){
             ResponseEntity<String> contractRepositoryResponse = contractRepository.getAllContractsFromSubscriber(subscriberId.getId());
-            mapJsonToContractList(contractRepositoryResponse);
+            jsonMapper.mapJsonToContractList(contractRepositoryResponse);
             contractList.modifySubscriberAddressOnAllContracts(subscriberRequestModification.getSubscriberAddress());
             ContractListRequest contractListRequest = new ContractListRequest(contractList);
             contractRepositoryResponse = contractRepository.saveContracts(contractListRequest);
@@ -55,14 +58,6 @@ public class SubscriberController {
         //subscriberRepositoryProxy.addMovement(subscriberRequestMovement);
         //return subscriberRepositoryProxy.modifyAddressOnAllContracts(subscriberRequestModification);
         return null;
-    }
-
-    private void mapJsonToContractList(ResponseEntity<String> contractRepositoryResponse) throws IOException {
-    }
-
-    private Country mapJsonToCountry(ResponseEntity<String> addressRepositoryResponse) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(addressRepositoryResponse.getBody(), Country.class);
     }
 
     private SubscriberRequestMovement setUpSubscriberRequestMovement(SubscriberRequestModification subscriberRequestModification) {

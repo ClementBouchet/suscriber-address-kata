@@ -36,13 +36,9 @@ import static org.mockito.Mockito.verify;
 public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @ClassRule
-    public static WireMockClassRule wireMockClassRule = new WireMockClassRule(options().port(8008).bindAddress("localhost"));
+    public static WireMockClassRule addressRepositoryWireMockClassRule = new WireMockClassRule(options().port(8008).bindAddress("localhost"));
     @Rule
-    public WireMockClassRule instanceRule = wireMockClassRule;
-    @ClassRule
-    public static WireMockClassRule wireMockClassRule2  =new WireMockClassRule(options().port(8009).bindAddress("localhost"));;
-    @Rule
-    public WireMockClassRule instanceRule2 = wireMockClassRule2;
+    public WireMockClassRule addressRepositoryInstanceRule = addressRepositoryWireMockClassRule;
 
     @Mock
     private ContractRepository mockedContractRepository;
@@ -69,7 +65,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
     @Test
     public void when_the_subscriber_lives_in_France_then_modify_his_address() throws IOException {
 
-        StubMapping stubMappingForAddressRepository = instanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(post(urlEqualTo("/address"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -88,7 +84,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
     public void when_the_subscriber_does_not_lives_in_France_then_do_not_modify_his_address() throws IOException {
 
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
-        StubMapping stubMappingForAddressRepository = instanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(post(urlEqualTo("/address"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -103,7 +99,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @Test
     public void when_the_subscriber_lives_in_France_then_get_all_his_contracts() throws IOException {
-        StubMapping stubMappingForAddressRepository = instanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(post(urlEqualTo("/address"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")

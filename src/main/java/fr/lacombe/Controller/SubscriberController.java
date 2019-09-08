@@ -31,7 +31,8 @@ public class SubscriberController {
     @Autowired
     AddressRepository addressRepository;
 
-    private ContractList contractList;
+    @Autowired
+    ContractList contractList;
 
     @Autowired
     private ContractRepository contractRepository;
@@ -74,7 +75,4 @@ public class SubscriberController {
         this.timeProvider = timeProvider;
     }
 
-    public void setContractList(ContractList contractList) {
-        this.contractList = contractList;
-    }
 }

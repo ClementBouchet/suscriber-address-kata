@@ -10,7 +10,7 @@ import fr.lacombe.Model.Request.SubscriberRequestMovement;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.AddressRepository;
 import fr.lacombe.Proxies.ContractRepository;
-import fr.lacombe.Proxies.SubscriberRepositoryProxy;
+import fr.lacombe.Proxies.SubscriberRepository;
 import fr.lacombe.Utils.TimeProvider;
 import fr.lacombe.Utils.TimeProviderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class SubscriberController {
     private TimeProviderInterface timeProvider;
 
     @Autowired
-    SubscriberRepositoryProxy subscriberRepositoryProxy;
+    SubscriberRepository subscriberRepository;
 
     @Autowired
     AddressRepository addressRepository;
@@ -42,7 +42,7 @@ public class SubscriberController {
     public ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification) throws IOException {
 
         SubscriberId subscriberId = subscriberRequestModification.getSubscriberId();
-        ResponseEntity<String> addressRepositoryResponse = addressRepository.getCountryAddress(subscriberId);
+        ResponseEntity<String> addressRepositoryResponse = addressRepository.getCountryAddress(subscriberId.getId());
         Country country = mapJsonToCountry(addressRepositoryResponse);
         if(country.isFrance()){
             ResponseEntity<String> contractRepositoryResponse = contractRepository.getAllContractsFromSubscriber(subscriberId.getId());

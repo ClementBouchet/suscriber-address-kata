@@ -16,8 +16,8 @@ import fr.lacombe.Model.MovementDate;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.SubscriberAddress;
 import fr.lacombe.Model.SubscriberId;
-import fr.lacombe.Proxies.AuthenticationServiceProxy;
-import fr.lacombe.Proxies.SubscriberRepositoryProxy;
+import fr.lacombe.Proxies.AuthenticationService;
+import fr.lacombe.Proxies.SubscriberRepository;
 import fr.lacombe.Utils.TimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,10 +44,10 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     private ResponseEntity<String> modificationResponse;
 
     @Autowired
-    AuthenticationServiceProxy authenticationServiceProxy;
+    AuthenticationService authenticationService;
 
     @Autowired
-    SubscriberRepositoryProxy subscriberRepositoryProxy;
+    SubscriberRepository subscriberRepository;
 
     @Autowired
     SubscriberController subscriberController;
@@ -84,7 +84,7 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     public void theAdvisorIsConnectedTo(String arg0) {
         Login advisorPseudo = new Login("advisorTestLogin");
 
-        ResponseEntity<String> response = authenticationServiceProxy.authenticate(advisorPseudo);
+        ResponseEntity<String> response = authenticationService.authenticate(advisorPseudo);
         advisorId = new AdvisorId(response.getBody());
         assertEquals(HttpStatus.OK , response.getStatusCode());
 

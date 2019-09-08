@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(name = "subscriber", url="http://localhost:8085/subscriber")
-public interface SubscriberRepositoryProxy {
+public interface SubscriberRepository {
 
     @PostMapping(value = "")
     ResponseEntity<String> modifyAddressOnAllContracts(SubscriberRequestModification subscriberRequestModification);

@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.removeStub;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
@@ -65,7 +65,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
     @Test
     public void when_the_subscriber_lives_in_France_then_modify_his_address() throws IOException {
 
-        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -84,7 +84,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
     public void when_the_subscriber_does_not_lives_in_France_then_do_not_modify_his_address() throws IOException {
 
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
-        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -99,12 +99,13 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @Test
     public void when_the_subscriber_lives_in_France_then_get_all_his_contracts() throws IOException {
-        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"country\": \"FRANCE\"}")));
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+
         subcriberController.modifyAddress(subscriberRequestModification);
 
         verify(mockedContractRepository).getAllContractsFromSubscriber(any());
@@ -114,12 +115,13 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @Test
     public void when_the_subscriber_lives_in_France_then_save_all_the_modified_contracts() throws IOException {
-        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(post(urlEqualTo("/address"))
+        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
                 .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"country\": \"FRANCE\"}")));
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+
         subcriberController.modifyAddress(subscriberRequestModification);
 
         verify(mockedContractRepository).saveContracts(any());

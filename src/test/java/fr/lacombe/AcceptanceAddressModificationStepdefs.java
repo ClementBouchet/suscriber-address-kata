@@ -6,6 +6,8 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import fr.lacombe.ClientInterfaces.AddressRepository;
+import fr.lacombe.ClientInterfaces.AuthenticationService;
 import fr.lacombe.Controller.SubscriberController;
 import fr.lacombe.Model.AdvisorId;
 import fr.lacombe.Model.Country;
@@ -16,8 +18,6 @@ import fr.lacombe.Model.MovementDate;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.SubscriberAddress;
 import fr.lacombe.Model.SubscriberId;
-import fr.lacombe.Proxies.AddressRepository;
-import fr.lacombe.Proxies.AuthenticationService;
 import fr.lacombe.Utils.JsonMapper;
 import fr.lacombe.Utils.SubscriberControllerContext;
 import fr.lacombe.Utils.TimeProvider;
@@ -47,7 +47,6 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
     private SubscriberId subscriberId;
     private AdvisorId advisorId;
     private boolean isAddressActive;
-    private ResponseEntity<String> modificationResponse;
 
     @Autowired
     AuthenticationService authenticationService;

@@ -1,4 +1,4 @@
-package fr.lacombe.Proxies;
+package fr.lacombe.ClientInterfaces;
 
 import fr.lacombe.Model.Login;
 import org.springframework.cloud.openfeign.FeignClient;

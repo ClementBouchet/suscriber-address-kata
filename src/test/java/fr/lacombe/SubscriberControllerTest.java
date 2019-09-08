@@ -65,11 +65,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
     @Test
     public void when_the_subscriber_lives_in_France_then_modify_his_address() throws IOException {
 
-        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
-                .withId(id)
-                .willReturn(aResponse().withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"country\": \"FRANCE\"}")));
+        StubMapping stubMappingForAddressRepository = stubAddressRepositoryToReturnCountry("FRANCE");
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
 
         subcriberController.modifyAddress(subscriberRequestModification);
@@ -82,13 +78,8 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @Test
     public void when_the_subscriber_does_not_lives_in_France_then_do_not_modify_his_address() throws IOException {
-
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
-        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
-                .withId(id)
-                .willReturn(aResponse().withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"country\": \"ITALIA\"}")));
+        StubMapping stubMappingForAddressRepository = stubAddressRepositoryToReturnCountry("ITALIA");
 
         subcriberController.modifyAddress(subscriberRequestModification);
 
@@ -99,11 +90,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @Test
     public void when_the_subscriber_lives_in_France_then_get_all_his_contracts() throws IOException {
-        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
-                .withId(id)
-                .willReturn(aResponse().withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"country\": \"FRANCE\"}")));
+        StubMapping stubMappingForAddressRepository = stubAddressRepositoryToReturnCountry("FRANCE");
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
 
         subcriberController.modifyAddress(subscriberRequestModification);
@@ -115,11 +102,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @Test
     public void when_the_subscriber_lives_in_France_then_save_all_the_modified_contracts() throws IOException {
-        StubMapping stubMappingForAddressRepository = addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
-                .withId(id)
-                .willReturn(aResponse().withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"country\": \"FRANCE\"}")));
+        StubMapping stubMappingForAddressRepository = stubAddressRepositoryToReturnCountry("FRANCE");
         SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
 
         subcriberController.modifyAddress(subscriberRequestModification);
@@ -127,5 +110,13 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
         verify(mockedContractRepository).saveContracts(any());
 
         removeStub(stubMappingForAddressRepository);
+    }
+
+    private StubMapping stubAddressRepositoryToReturnCountry(String countryName) {
+        return addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
+                .withId(id)
+                .willReturn(aResponse().withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"country\": \"" + countryName + "\"}")));
     }
 }

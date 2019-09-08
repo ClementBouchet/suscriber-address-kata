@@ -12,7 +12,6 @@ import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.AddressRepository;
 import fr.lacombe.Proxies.ContractRepository;
 import fr.lacombe.Proxies.HistoryRepository;
-import fr.lacombe.Proxies.SubscriberRepository;
 import fr.lacombe.Utils.JsonMapper;
 import fr.lacombe.Utils.SubscriberControllerContext;
 import fr.lacombe.Utils.TimeProvider;
@@ -31,14 +30,14 @@ public class SubscriberController {
     @Autowired
     private TimeProviderInterface timeProvider;
 
-    @Autowired
-    SubscriberRepository subscriberRepository;
+//    @Autowired
+//    SubscriberRepository subscriberRepository;
 
     @Autowired
     AddressRepository addressRepository;
 
-    @Autowired
-    ContractList contractList;
+//    @Autowired
+//    ContractList contractList;
 
     @Autowired
     JsonMapper jsonMapper;
@@ -59,7 +58,7 @@ public class SubscriberController {
         ResponseEntity<String> contractRepositoryResponse = new ResponseEntity<String>(HttpStatus.NO_CONTENT);
         if(country.isFrance()){
             contractRepositoryResponse = contractRepository.getAllContractsFromSubscriber(subscriberId.getId());
-            jsonMapper.mapJsonToContractList(contractRepositoryResponse);
+            ContractList contractList = jsonMapper.mapJsonToContractList(contractRepositoryResponse);
             contractList.modifySubscriberAddressOnAllContracts(subscriberRequestModification.getSubscriberAddress());
             ContractListRequest contractListRequest = new ContractListRequest(contractList);
             contractRepositoryResponse = contractRepository.saveContracts(contractListRequest);
@@ -67,9 +66,9 @@ public class SubscriberController {
         if(contractRepositoryResponse.getStatusCode().equals(HttpStatus.OK)){
             AdvisorId advisorId = applicationContext.getAdvisorId();
             HistoryRequest historyRequest = new HistoryRequest(timeProvider.now(), advisorId, subscriberId, MovementType.SUSBCRIBER_INFO);
-            historyRepository.createMovement(historyRequest);
+            return historyRepository.createMovement(historyRequest);
         }
-        return null;
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     private SubscriberRequestMovement setUpSubscriberRequestMovement(SubscriberRequestModification subscriberRequestModification) {

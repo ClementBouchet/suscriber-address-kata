@@ -6,7 +6,6 @@ import fr.lacombe.Controller.SubscriberController;
 import fr.lacombe.Model.AdvisorId;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.SubscriberId;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -46,14 +44,6 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @Autowired
     private SubscriberController subcriberController;
-
-    private static UUID id;
-
-
-    @BeforeClass
-    public static void generateRandomId(){
-        id = UUID.randomUUID();
-    }
 
 
     @Test
@@ -131,7 +121,6 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     private StubMapping stubAddressRepositoryToReturnCountry(String countryName) {
         return addressRepositoryInstanceRule.stubFor(get(urlMatching("/address/.*"))
-                .withId(id)
                 .willReturn(aResponse().withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"country\": \"" + countryName + "\"}")));

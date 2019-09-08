@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import fr.lacombe.Controller.SubscriberController;
 import fr.lacombe.Model.AdvisorId;
-import fr.lacombe.Model.Request.SubscriberRequestModification;
+import fr.lacombe.Model.Request.SubscriberModificationRequest;
 import fr.lacombe.Model.SubscriberId;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -48,13 +48,13 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
 
     @Test
     public void when_the_subscriber_does_not_lives_in_France_then_do_not_get_all_his_contracts() throws IOException {
-        SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+        SubscriberModificationRequest subscriberModificationRequest = new SubscriberModificationRequest(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
         StubMapping stubMappingForAddressRepository = stubAddressRepositoryToReturnCountry("ITALIA");
         StubMapping stubMappingForGettingContractsFromContractRepository = stubContractRepositoryToGetContractList();
         StubMapping stubMappingForSavingContractsInContractRepository = stubContractRepositoryToSaveModifiedContracts();
         StubMapping stubHistoryRepositoryToCreateMovement = stubHistoryRepositoryToCreateMovement();
 
-        subcriberController.modifyAddress(subscriberRequestModification);
+        subcriberController.modifyAddress(subscriberModificationRequest);
 
         addressRepositoryInstanceRule.verify(0,getRequestedFor(urlMatching("address/.*")));
 
@@ -70,9 +70,9 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
         StubMapping stubMappingForGettingContractsFromContractRepository = stubContractRepositoryToGetContractList();
         StubMapping stubMappingForSavingContractsInContractRepository = stubContractRepositoryToSaveModifiedContracts();
         StubMapping stubHistoryRepositoryToCreateMovement = stubHistoryRepositoryToCreateMovement();
-        SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+        SubscriberModificationRequest subscriberModificationRequest = new SubscriberModificationRequest(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
 
-        subcriberController.modifyAddress(subscriberRequestModification);
+        subcriberController.modifyAddress(subscriberModificationRequest);
 
         contractRepositoryInstanceRule.verify(getRequestedFor(urlMatching("/contract/.*")));
 
@@ -88,9 +88,9 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
         StubMapping stubMappingForGettingContractsFromContractRepository = stubContractRepositoryToGetContractList();
         StubMapping stubMappingForSavingContractsInContractRepository = stubContractRepositoryToSaveModifiedContracts();
         StubMapping stubHistoryRepositoryToCreateMovement = stubHistoryRepositoryToCreateMovement();
-        SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+        SubscriberModificationRequest subscriberModificationRequest = new SubscriberModificationRequest(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
 
-        subcriberController.modifyAddress(subscriberRequestModification);
+        subcriberController.modifyAddress(subscriberModificationRequest);
 
         contractRepositoryInstanceRule.verify(postRequestedFor(urlEqualTo("/contract")));
 
@@ -107,9 +107,9 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
         StubMapping stubMappingForGettingContractsFromContractRepository = stubContractRepositoryToGetContractList();
         StubMapping stubMappingForSavingContractsInContractRepository = stubContractRepositoryToSaveModifiedContracts();
         StubMapping stubHistoryRepositoryToCreateMovement = stubHistoryRepositoryToCreateMovement();
-        SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+        SubscriberModificationRequest subscriberModificationRequest = new SubscriberModificationRequest(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
 
-        subcriberController.modifyAddress(subscriberRequestModification);
+        subcriberController.modifyAddress(subscriberModificationRequest);
 
         historyRepositoryInstanceRule.verify(postRequestedFor(urlEqualTo("/movement")));
 

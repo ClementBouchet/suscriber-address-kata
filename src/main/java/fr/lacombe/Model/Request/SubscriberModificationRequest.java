@@ -7,19 +7,14 @@ import fr.lacombe.Model.SubscriberId;
 
 import java.io.Serializable;
 
-public class SubscriberRequestModification extends Request implements Serializable {
+public class SubscriberModificationRequest extends Request implements Serializable {
 
     private SubscriberAddress subscriberAddress;
     private SubscriberId subscriberId;
     private EffectiveDate effectiveDate;
     private AdvisorId advisorId;
 
-    public SubscriberRequestModification(SubscriberAddress subscriberAddress, EffectiveDate effectiveDate) {
-        this.subscriberAddress = subscriberAddress;
-        this.effectiveDate = effectiveDate;
-    }
-
-    public SubscriberRequestModification(SubscriberAddress subscriberAddress, SubscriberId subscriberId, EffectiveDate effectiveDate, AdvisorId advisorId) {
+    public SubscriberModificationRequest(SubscriberAddress subscriberAddress, SubscriberId subscriberId, EffectiveDate effectiveDate, AdvisorId advisorId) {
         this.subscriberAddress = subscriberAddress;
         this.subscriberId = subscriberId;
         this.effectiveDate = effectiveDate;

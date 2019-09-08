@@ -15,7 +15,7 @@ import fr.lacombe.Model.CountryEnum;
 import fr.lacombe.Model.EffectiveDate;
 import fr.lacombe.Model.Login;
 import fr.lacombe.Model.MovementDate;
-import fr.lacombe.Model.Request.SubscriberRequestModification;
+import fr.lacombe.Model.Request.SubscriberModificationRequest;
 import fr.lacombe.Model.SubscriberAddress;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Utils.JsonMapper;
@@ -134,9 +134,9 @@ public class AcceptanceAddressModificationStepdefs extends SpringIntegrationTest
 
         SubscriberAddress expectedSubscriberAddress = new SubscriberAddress(CountryEnum.FRANCE, "paris", 75013, "124, avenue d'Italie", isAddressActive);
         EffectiveDate effectiveDate = null;
-        SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(expectedSubscriberAddress,subscriberId, effectiveDate, advisorId);
+        SubscriberModificationRequest subscriberModificationRequest = new SubscriberModificationRequest(expectedSubscriberAddress,subscriberId, effectiveDate, advisorId);
 
-        subscriberController.modifyAddress(subscriberRequestModification);
+        subscriberController.modifyAddress(subscriberModificationRequest);
     }
 
     @Then("^the modified subscriber's address is saved on all the contracts of the subscriber$")

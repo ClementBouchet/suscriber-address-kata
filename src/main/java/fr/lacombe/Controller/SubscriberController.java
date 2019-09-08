@@ -9,7 +9,7 @@ import fr.lacombe.Model.Country;
 import fr.lacombe.Model.MovementType;
 import fr.lacombe.Model.Request.ContractListRequest;
 import fr.lacombe.Model.Request.HistoryRequest;
-import fr.lacombe.Model.Request.SubscriberRequestModification;
+import fr.lacombe.Model.Request.SubscriberModificationRequest;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Utils.JsonMapper;
 import fr.lacombe.Utils.SubscriberControllerContext;
@@ -42,16 +42,16 @@ public class SubscriberController {
     private SubscriberControllerContext applicationContext;
 
     @PostMapping(value = "/address/modification")
-    public ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification) throws IOException {
+    public ResponseEntity<String> modifyAddress(SubscriberModificationRequest subscriberModificationRequest) throws IOException {
 
         ResponseEntity<String> contractRepositoryResponse = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        SubscriberId subscriberId = subscriberRequestModification.getSubscriberId();
+        SubscriberId subscriberId = subscriberModificationRequest.getSubscriberId();
 
         Country country = getCountryAddressFromRepositoryBy(subscriberId);
 
         if(country.isFrance()){
             ContractList contractList = getContractListFromRepositoryBy(subscriberId);
-            contractList.modifySubscriberAddressOnAllContracts(subscriberRequestModification.getSubscriberAddress());
+            contractList.modifySubscriberAddressOnAllContracts(subscriberModificationRequest.getSubscriberAddress());
             contractRepositoryResponse = contractRepository.saveContracts(new ContractListRequest(contractList));
         }
         if(contractRepositoryResponse.getStatusCode().equals(HttpStatus.OK)){

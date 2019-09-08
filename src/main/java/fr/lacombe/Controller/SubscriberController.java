@@ -7,7 +7,6 @@ import fr.lacombe.Model.MovementType;
 import fr.lacombe.Model.Request.ContractListRequest;
 import fr.lacombe.Model.Request.HistoryRequest;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
-import fr.lacombe.Model.Request.SubscriberRequestMovement;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.AddressRepository;
 import fr.lacombe.Proxies.ContractRepository;
@@ -30,14 +29,8 @@ public class SubscriberController {
     @Autowired
     private TimeProviderInterface timeProvider;
 
-//    @Autowired
-//    SubscriberRepository subscriberRepository;
-
     @Autowired
     AddressRepository addressRepository;
-
-//    @Autowired
-//    ContractList contractList;
 
     @Autowired
     JsonMapper jsonMapper;
@@ -69,15 +62,6 @@ public class SubscriberController {
             return historyRepository.createMovement(historyRequest);
         }
         return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-    }
-
-    private SubscriberRequestMovement setUpSubscriberRequestMovement(SubscriberRequestModification subscriberRequestModification) {
-        SubscriberRequestMovement subscriberRequestMovement = new SubscriberRequestMovement();
-        subscriberRequestMovement.setAdvisorId(subscriberRequestModification.getAdvisorId());
-        subscriberRequestMovement.setMovementDate(timeProvider.now());
-        subscriberRequestMovement.setSubscriberId(subscriberRequestModification.getSubscriberId());
-        subscriberRequestMovement.setMovementType(MovementType.SUSBCRIBER_INFO);
-        return subscriberRequestMovement;
     }
 
     public void setTimeProvider(TimeProvider timeProvider) {

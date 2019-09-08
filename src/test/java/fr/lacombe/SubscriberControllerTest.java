@@ -8,6 +8,7 @@ import fr.lacombe.Model.ContractList;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.ContractRepository;
+import fr.lacombe.Proxies.HistoryRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -18,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -31,6 +34,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 public class SubscriberControllerTest extends SpringIntegrationTest{
@@ -41,6 +45,8 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
     public WireMockClassRule addressRepositoryInstanceRule = addressRepositoryWireMockClassRule;
 
     @Mock
+    private HistoryRepository mockedHistoryRepository;
+    @Mock
     private ContractRepository mockedContractRepository;
     @Mock
     private ContractList mockedContractList;
@@ -50,6 +56,7 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
     private SubscriberController subcriberController;
 
     private static UUID id;
+
 
 
     @BeforeClass
@@ -108,6 +115,20 @@ public class SubscriberControllerTest extends SpringIntegrationTest{
         subcriberController.modifyAddress(subscriberRequestModification);
 
         verify(mockedContractRepository).saveContracts(any());
+
+        removeStub(stubMappingForAddressRepository);
+    }
+
+
+    @Test
+    public void when_the_contracts_have_been_saved_and_modified_then_create_modification_movement() throws IOException {
+        StubMapping stubMappingForAddressRepository = stubAddressRepositoryToReturnCountry("FRANCE");
+        SubscriberRequestModification subscriberRequestModification = new SubscriberRequestModification(null, new SubscriberId("anySubscriberId"), null, new AdvisorId("anyAdvisorId"));
+        when(mockedContractRepository.saveContracts(any())).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+
+        subcriberController.modifyAddress(subscriberRequestModification);
+
+        verify(mockedHistoryRepository).createMovement(any());
 
         removeStub(stubMappingForAddressRepository);
     }

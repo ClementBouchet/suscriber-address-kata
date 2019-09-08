@@ -1,19 +1,24 @@
 package fr.lacombe.Controller;
 
+import fr.lacombe.Model.AdvisorId;
 import fr.lacombe.Model.ContractList;
 import fr.lacombe.Model.Country;
 import fr.lacombe.Model.MovementType;
 import fr.lacombe.Model.Request.ContractListRequest;
+import fr.lacombe.Model.Request.HistoryRequest;
 import fr.lacombe.Model.Request.SubscriberRequestModification;
 import fr.lacombe.Model.Request.SubscriberRequestMovement;
 import fr.lacombe.Model.SubscriberId;
 import fr.lacombe.Proxies.AddressRepository;
 import fr.lacombe.Proxies.ContractRepository;
+import fr.lacombe.Proxies.HistoryRepository;
 import fr.lacombe.Proxies.SubscriberRepository;
 import fr.lacombe.Utils.JsonMapper;
+import fr.lacombe.Utils.SubscriberControllerContext;
 import fr.lacombe.Utils.TimeProvider;
 import fr.lacombe.Utils.TimeProviderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +45,10 @@ public class SubscriberController {
 
     @Autowired
     private ContractRepository contractRepository;
+    @Autowired
+    private HistoryRepository historyRepository;
+    @Autowired
+    private SubscriberControllerContext applicationContext;
 
     @PostMapping(value = "/address/modification")
     public ResponseEntity<String> modifyAddress(SubscriberRequestModification subscriberRequestModification) throws IOException {
@@ -47,16 +56,19 @@ public class SubscriberController {
         SubscriberId subscriberId = subscriberRequestModification.getSubscriberId();
         ResponseEntity<String> addressRepositoryResponse = addressRepository.getCountryAddress(subscriberId.getId());
         Country country = jsonMapper.mapJsonToCountry(addressRepositoryResponse);
+        ResponseEntity<String> contractRepositoryResponse = new ResponseEntity<String>(HttpStatus.NO_CONTENT);
         if(country.isFrance()){
-            ResponseEntity<String> contractRepositoryResponse = contractRepository.getAllContractsFromSubscriber(subscriberId.getId());
+            contractRepositoryResponse = contractRepository.getAllContractsFromSubscriber(subscriberId.getId());
             jsonMapper.mapJsonToContractList(contractRepositoryResponse);
             contractList.modifySubscriberAddressOnAllContracts(subscriberRequestModification.getSubscriberAddress());
             ContractListRequest contractListRequest = new ContractListRequest(contractList);
             contractRepositoryResponse = contractRepository.saveContracts(contractListRequest);
         }
-        //SubscriberRequestMovement subscriberRequestMovement = setUpSubscriberRequestMovement(subscriberRequestModification);
-        //subscriberRepositoryProxy.addMovement(subscriberRequestMovement);
-        //return subscriberRepositoryProxy.modifyAddressOnAllContracts(subscriberRequestModification);
+        if(contractRepositoryResponse.getStatusCode().equals(HttpStatus.OK)){
+            AdvisorId advisorId = applicationContext.getAdvisorId();
+            HistoryRequest historyRequest = new HistoryRequest(timeProvider.now(), advisorId, subscriberId, MovementType.SUSBCRIBER_INFO);
+            historyRepository.createMovement(historyRequest);
+        }
         return null;
     }
 
